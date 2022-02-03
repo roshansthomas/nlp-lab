@@ -40,13 +40,13 @@ Deploying the architecture with AWS CloudFormation
 The first step is to use an [AWS CloudFormation](https://aws.amazon.com/cloudformation/) template to provision the necessary IAM role and AWS Lambda function to interact with the Amazon S3, AWS Lambda, Amazon Textract, and Amazon Comprehend APIs.
 
 1.  Launch the AWS CloudFormation template in the US-East-1 (Northern Virginia) Region:[\
-    ![](https://d2908q01vomqb2.cloudfront.net/f1f836cb4ea6efb2a0b1b99f41ad8b103eff4b59/2019/10/30/LaunchCFN.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=document-search&templateURL=https%3A%2F%2Fee-assets-prod-us-east-1.s3.amazonaws.com%2Fmodules%2F3a329393b93e4f5cb7474c239ac61eb1%2Fv1%2Ftemplate-export-textract.yml)
+    ![](https://d2908q01vomqb2.cloudfront.net/f1f836cb4ea6efb2a0b1b99f41ad8b103eff4b59/2019/10/30/LaunchCFN.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=document-search&templateURL=https:%2F%2Fee-assets-prod-us-east-1.s3.amazonaws.com%2Fmodules%2F3a329393b93e4f5cb7474c239ac61eb1%2Fv1%2Ftemplate-export-textract.yml)
 2.  You will see the below information on the Create stack screen:\
     Stack name: document-search\
     CognitoAdminEmail: abc@amazon.com\
     DOMAINNAME: documentsearchapp.Edit the CognitoAdminEmail with your email address. You will receive your temporary Kibana credentials in an email.\
     ![](images/NLPTextractComprehend2.png)
-3.  Scroll down to Capabilities and check both the boxes to provide acknowledgement that AWS CloudFormation will create IAM resources. For more information, see [AWS IAM resources](https://aws.amazon.com/iam/resources/).![](images/NLPTextractComprehend3.png)
+3.  Scroll down to Capabilities and check all boxes to provide acknowledgement that AWS CloudFormation will create IAM resources. For more information, see [AWS IAM resources](https://aws.amazon.com/iam/resources/).![](images/NLPTextractComprehend3.png)
 4.  The following screenshot of the Stack Detail page shows the Status of the CloudFormation stack as `CREATE_IN_PROGRESS`. Wait up to 20 minutes for the Status to change to `CREATE_COMPLETE`. In Outputs, copy the value of S3KeyPhraseBucket and KibanaLoginURL.![](images/NLPTextractComprehend6.png)
 
 ### Uploading documents to the S3 bucket
