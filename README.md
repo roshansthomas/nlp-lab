@@ -1,6 +1,6 @@
 ## Building an NLP-powered search index with Amazon Textract and Amazon Comprehend
 
->This lab is provided as part of **[AWS Innovate Data Edition](https://aws.amazon.com/events/aws-innovate/data/)**, click [here](https://github.com/phonghuule/aws-innovate-data) to explore the full list of hands-on labs
+>This lab is provided as part of **[AWS Innovate Data Edition](https://aws.amazon.com/events/aws-innovate/data/)**, click [here](https://github.com/roshansthomas/aws-innovate-ai-ml-2022) to explore the full list of hands-on labs
 :information_source:
  You will run this lab in your own AWS account. Please follow directions
  at the end of the lab to remove resources to avoid future costs.
@@ -9,8 +9,6 @@
 In this lab we will walk you through creating an NLP-powered search index with Amazon Textract and Amazon Comprehend as an automated content-processing pipeline for storing and analyzing scanned image documents. For pdf document processing, please refer AWS Sample github repository to use [Textractor](https://github.com/aws-samples/amazon-textract-textractor).
 
 This is a labified version of this AWS Blog [Post](https://aws.amazon.com/blogs/machine-learning/building-an-nlp-powered-search-index-with-amazon-textract-and-amazon-comprehend/)
-
-
 
 Architecture
 ------------
@@ -30,8 +28,8 @@ This solution uses serverless technologies and managed services to be scalable a
 
 -   [Amazon Textract](https://aws.amazon.com/textract/) -- Extracts text and data from scanned documents automatically.
 -   [Amazon Comprehend](https://aws.amazon.com/documentation/comprehend/) -- Uses ML to find insights and relationships in text.
--   [Amazon ES](http://aws.amazon.com/elasticsearch-service) with Kibana -- Searches and visualizes the information.
--   [Amazon Cognito](http://aws.amazon.com/cognito) -- Integrates with Amazon ES and authenticates user access to Kibana. For more information, see [Get started with Amazon Elasticsearch Service: Use Amazon Cognito for Kibana access control](https://aws.amazon.com/blogs/database/get-started-with-amazon-elasticsearch-service-use-amazon-cognito-for-kibana-access-control/).
+-   [Amazon OpenSearch Service](https://aws.amazon.com/opensearch-service/) with Kibana -- Searches and visualizes the information.
+-   [Amazon Cognito](http://aws.amazon.com/cognito) -- Integrates with Amazon ES and authenticates user access to Kibana. For more information, see [Configuring Amazon Cognito authentication for OpenSearch Dashboards](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/cognito-auth.html).
 -   [Amazon S3](http://aws.amazon.com/s3) -- Stores your documents and allows for central management with fine-tuned access controls.
 -   [AWS Lambda](http://aws.amazon.com/lambda) -- Executes code in response to triggers such as changes in data, shifts in system state, or user actions. Because S3 can directly trigger a Lambda function, you can build a variety of real-time [serverless](https://aws.amazon.com/serverless/) data-processing systems.
 
@@ -42,16 +40,14 @@ Deploying the architecture with AWS CloudFormation
 The first step is to use an [AWS CloudFormation](https://aws.amazon.com/cloudformation/) template to provision the necessary IAM role and AWS Lambda function to interact with the Amazon S3, AWS Lambda, Amazon Textract, and Amazon Comprehend APIs.
 
 1.  Launch the AWS CloudFormation template in the US-East-1 (Northern Virginia) Region:[\
-    ![](https://d2908q01vomqb2.cloudfront.net/f1f836cb4ea6efb2a0b1b99f41ad8b103eff4b59/2019/10/30/LaunchCFN.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=document-search&templateURL=https:%2F%2Faws-ml-blog.s3.amazonaws.com%2Fartifacts%2FNLP-powered-textract-comprehend%2Ftemplate-export-textract.yml)
+    ![](https://d2908q01vomqb2.cloudfront.net/f1f836cb4ea6efb2a0b1b99f41ad8b103eff4b59/2019/10/30/LaunchCFN.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/review?stackName=document-search&templateURL=https%3A%2F%2Fee-assets-prod-us-east-1.s3.amazonaws.com%2Fmodules%2F3a329393b93e4f5cb7474c239ac61eb1%2Fv1%2Ftemplate-export-textract.yml)
 2.  You will see the below information on the Create stack screen:\
     Stack name: document-search\
     CognitoAdminEmail: abc@amazon.com\
     DOMAINNAME: documentsearchapp.Edit the CognitoAdminEmail with your email address. You will receive your temporary Kibana credentials in an email.\
-    ![](https://d2908q01vomqb2.cloudfront.net/f1f836cb4ea6efb2a0b1b99f41ad8b103eff4b59/2019/10/29/NLPTextractComprehend2.png)
-3.  Scroll down to Capabilities and check both the boxes to provide acknowledgement that AWS CloudFormation will create IAM resources. For more information, see [AWS IAM resources](https://aws.amazon.com/iam/resources/).![](https://d2908q01vomqb2.cloudfront.net/f1f836cb4ea6efb2a0b1b99f41ad8b103eff4b59/2019/10/29/NLPTextractComprehend3.png)
-4.  Scroll down to Transforms and choose Create Change Set.![](https://d2908q01vomqb2.cloudfront.net/f1f836cb4ea6efb2a0b1b99f41ad8b103eff4b59/2019/10/29/NLPTextractComprehend4.png)The AWS CloudFormation template uses [AWS SAM](https://aws.amazon.com/serverless/sam/), which simplifies how to define functions and APIs for serverless applications, as well as features for these services like environment variables. When deploying AWS SAM templates in an AWS CloudFormation template, you need to perform a transform step to convert the AWS SAM template.
-5.  Wait a few seconds for the change set to finish computing changes. Your screen should look as follows with Action, Logical Id, Physical Id, Resource Type, and Replacement. Finally, click on the Execute button, which will let AWS CloudFormation launch resources in the background.![](https://d2908q01vomqb2.cloudfront.net/f1f836cb4ea6efb2a0b1b99f41ad8b103eff4b59/2019/10/29/NLPTextractComprehend5.png)
-6.  The following screenshot of the Stack Detail page shows the Status of the CloudFormation stack as `CREATE_IN_PROGRESS`. Wait up to 20 minutes for the Status to change to `CREATE_COMPLETE`. In Outputs, copy the value of S3KeyPhraseBucket and KibanaLoginURL.![](https://d2908q01vomqb2.cloudfront.net/f1f836cb4ea6efb2a0b1b99f41ad8b103eff4b59/2019/10/29/NLPTextractComprehend6.png)
+    ![](images/NLPTextractComprehend2.png)
+3.  Scroll down to Capabilities and check both the boxes to provide acknowledgement that AWS CloudFormation will create IAM resources. For more information, see [AWS IAM resources](https://aws.amazon.com/iam/resources/).![](images/NLPTextractComprehend3.png)
+4.  The following screenshot of the Stack Detail page shows the Status of the CloudFormation stack as `CREATE_IN_PROGRESS`. Wait up to 20 minutes for the Status to change to `CREATE_COMPLETE`. In Outputs, copy the value of S3KeyPhraseBucket and KibanaLoginURL.![](images/NLPTextractComprehend6.png)
 
 ### Uploading documents to the S3 bucket
 
@@ -156,4 +152,4 @@ Note: You can also add forms and table to view and search tables and forms.
 
 
 ## Survey
-Please help us to provide your feedback [here](https://amazonmr.au1.qualtrics.com/jfe/form/SV_3a6rNirgLrWYRW6?Session=HOL04). Participants who complete the surveys from AWS Innovate Online Conference - Data Edition will receive a gift code for USD25 in AWS credits. AWS credits will be sent via email by 30 September, 2021.
+TODO
