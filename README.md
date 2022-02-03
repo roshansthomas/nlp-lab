@@ -1,6 +1,6 @@
 ## Building an NLP-powered search index with Amazon Textract and Amazon Comprehend
 
->This lab is provided as part of **[AWS Innovate Data Edition](https://aws.amazon.com/events/aws-innovate/data/)**, click [here](https://github.com/roshansthomas/aws-innovate-ai-ml-2022) to explore the full list of hands-on labs
+>This lab is provided as part of **[AWS Innovate Machine Learning Edition](https://aws.amazon.com/events/aws-innovate/machine-learning/)**, click [here](https://github.com/roshansthomas/aws-innovate-ai-ml-2022) to explore the full list of hands-on labs
 :information_source:
  You will run this lab in your own AWS account. Please follow directions
  at the end of the lab to remove resources to avoid future costs.
@@ -17,7 +17,7 @@ Architecture
 2.  Amazon S3 upload triggers AWS Lambda.
 3.  AWS Lambda invokes Amazon Textract to extract text from image.
 4.  AWS Lambda sends the extracted text from image to Amazon Comprehend for entity and key phrase extraction.
-5.  This data is indexed and loaded into Amazon Elasticsearch.
+5.  This data is indexed and loaded into Amazon OpenSearch service.
 6.  Kibana gets indexed data.
 7.  Users log into Amazon Cognito.
 8.  Amazon Cognito authenticates to Kibana to search documents.
@@ -104,10 +104,10 @@ detect_entity= comprehend.detect_entities(Text=text, LanguageCode='en')
 You can index the response received from Amazon Textract and Amazon Comprehend and load it into Amazon ES to create an NLP-powered search index. Refer to the below code:
 
 ```
- #Connection to Elasticsearch
+ #Connection to OpenSearch Service
 
         es=connectES()
-#Saving Index to Elastocsearch endpoint in primary lambda handler
+#Saving Index to OpenSearch endpoint in primary lambda handler
 
         es.index(index="document", doc_type="_doc", body=searchdata)
 ```
